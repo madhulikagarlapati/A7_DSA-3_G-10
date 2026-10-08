@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>TEXTFORGE - Document Analysis</title>
+
+    <link rel="stylesheet" href="/css/style.css">
+
+    <style>
+        .analysis-main {
+            max-width: 1200px;
+        }
+
+        .analysis-card {
+            margin-top: 24px;
+            padding: 26px;
+
+            background: #0f172a;
+            border: 1px solid #263653;
+            border-radius: 17px;
+
+            box-shadow:
+                0 12px 40px rgba(0, 0, 0, 0.18);
+        }
+
+        .analysis-card h2 {
+            margin: 0;
+            color: #f8fafc;
+            font-size: 22px;
+        }
+
+        .analysis-card p {
+            color: #94a3b8;
+            line-height: 1.6;
+        }
+
+        .analysis-textarea {
+            min-height: 230px;
+            margin-top: 18px;
+        }
+
+        .analysis-button {
+            margin-top: 15px;
+        }
+
+        .analysis-status {
+            margin-top: 15px;
+            padding: 12px 14px;
+
+            border-radius: 9px;
+
+            color: #cbd5e1;
+            background: #111c30;
+            border: 1px solid #263653;
+        }
+
+        .analysis-status.success {
+            color: #6ee7b7;
+            background: rgba(6, 95, 70, 0.15);
+            border-color: #065f46;
+        }
+
+        .analysis-status.error {
+            color: #fca5a5;
+            background: rgba(127, 29, 29, 0.15);
+            border-color: #7f1d1d;
+        }
+
+        .analysis-metrics {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-top: 24px;
+        }
+
+        .analysis-metric {
+            padding: 20px;
+
+            background: #111827;
+            border: 1px solid #263653;
+            border-radius: 13px;
+        }
+
+        .analysis-metric-label {
+            color: #94a3b8;
+            font-size: 12px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: .7px;
+        }
+
+        .analysis-metric-value {
+            margin-top: 8px;
+
+            color: #2dd4bf;
+            font-size: 30px;
+            font-weight: 900;
+        }
+
+        .frequency-list {
+            margin-top: 20px;
+
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+
+        .frequency-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            padding: 12px 14px;
+
+            background: #0b1220;
+            border: 1px solid #22304a;
+            border-radius: 9px;
+        }
+
+        .frequency-word {
+            color: #e2e8f0;
+            font-weight: 700;
+        }
+
+        .frequency-count {
+            min-width: 30px;
+
+            text-align: center;
+
+            padding: 4px 8px;
+
+            border-radius: 6px;
+
+            background: #172554;
+            color: #a5b4fc;
+
+            font-size: 12px;
+            font-weight: 800;
+        }
+
+        .empty-frequency {
+            padding: 25px;
+
+            text-align: center;
+
+            color: #64748b;
+
+            background: #0b1220;
+            border: 1px dashed #334155;
+            border-radius: 10px;
+        }
+
+        @media (max-width: 750px) {
+            .analysis-metrics {
+                grid-template-columns: 1fr;
+            }
+
+            .frequency-list {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header class="topbar">
+
+    <div class="brand">
+
+        <div class="brand-mark">
+            TF
+        </div>
+
+        <div>
+            <div class="brand-name">
+                TEXTFORGE
+            </div>
+
+            <div class="brand-subtitle">
+                Advanced Algorithms Project
+            </div>
+        </div>
+
+    </div>
+
+
+    <nav class="nav">
+
+        <a href="/index.html">
+            Dashboard
+        </a>
+
+        <a href="/documents.html">
+            Documents
+        </a>
+
+        <a href="/search.html">
+            Search Lab
+        </a>
+
+        <a href="/analysis.html" class="active">
+            Analysis
+        </a>
+
+        <a href="/algorithm.html">
+            Algorithm Lab
+        </a>
+
+        <a href="/scheduler.html">
+            Scheduler
+        </a>
+
+    </nav>
+
+</header>
+
+
+<main class="page analysis-main">
+
+    <section class="page-header">
+
+        <div>
+
+            <div class="eyebrow">
+                DOCUMENT INTELLIGENCE
+            </div>
+
+            <h1 class="page-title">
+                Document Analysis
+            </h1>
+
+            <p class="page-description">
+                Analyze text using word counting, character counting,
+                sentence detection, and word-frequency analysis.
+            </p>
+
+        </div>
+
+    </section>
+
+
+    <!-- INPUT -->
+
+    <section class="analysis-card">
+
+        <h2>
+            Analyze Your Document
+        </h2>
+
+        <p>
+            Enter or paste text below and TEXTFORGE will calculate
+            important document statistics.
+        </p>
+
+
+        <textarea
+            id="documentText"
+            class="analysis-textarea"
+            placeholder="Paste your document text here..."></textarea>
+
+
+        <button
+            type="button"
+            id="analyzeButton"
+            class="btn btn-primary analysis-button">
+
+            Analyze Document
+
+        </button>
+
+
+        <div
+            id="analysisStatus"
+            class="analysis-status">
+
+            Ready to analyze your document.
+
+        </div>
+
+    </section>
+
+
+    <!-- METRICS -->
+
+    <section class="analysis-metrics">
+
+        <div class="analysis-metric">
+
+            <div class="analysis-metric-label">
+                Words
+            </div>
+
+            <div
+                id="wordCount"
+                class="analysis-metric-value">
+
+                0
+
+            </div>
+
+        </div>
+
+
+        <div class="analysis-metric">
+
+            <div class="analysis-metric-label">
+                Characters
+            </div>
+
+            <div
+                id="characterCount"
+                class="analysis-metric-value">
+
+                0
+
+            </div>
+
+        </div>
+
+
+        <div class="analysis-metric">
+
+            <div class="analysis-metric-label">
+                Sentences
+            </div>
+
+            <div
+                id="sentenceCount"
+                class="analysis-metric-value">
+
+                0
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- FREQUENCY -->
+
+    <section class="analysis-card">
+
+        <h2>
+            Word Frequency
+        </h2>
+
+        <p>
+            Shows how frequently each word appears in the document.
+        </p>
+
+
+        <div
+            id="frequencyList"
+            class="frequency-list">
+
+            <div class="empty-frequency">
+                Analyze a document to view word frequency.
+            </div>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+<script>
+
+const textInput =
+    document.getElementById(
+        "documentText"
+    );
+
+const analyzeButton =
+    document.getElementById(
+        "analyzeButton"
+    );
+
+const statusElement =
+    document.getElementById(
+        "analysisStatus"
+    );
+
+const wordCountElement =
+    document.getElementById(
+        "wordCount"
+    );
+
+const characterCountElement =
+    document.getElementById(
+        "characterCount"
+    );
+
+const sentenceCountElement =
+    document.getElementById(
+        "sentenceCount"
+    );
+
+const frequencyListElement =
+    document.getElementById(
+        "frequencyList"
+    );
+
+
+analyzeButton.addEventListener(
+    "click",
+    async () => {
+
+        const text =
+            textInput.value.trim();
+
+
+        if (!text) {
+
+            statusElement.textContent =
+                "Please enter some text first.";
+
+            statusElement.className =
+                "analysis-status error";
+
+            return;
+
+        }
+
+
+        analyzeButton.disabled = true;
+
+        analyzeButton.textContent =
+            "Analyzing...";
+
+
+        try {
+
+            const encodedText =
+                encodeURIComponent(text);
+
+
+            const [
+                wordResponse,
+                characterResponse,
+                sentenceResponse,
+                frequencyResponse
+            ] = await Promise.all([
+
+                fetch(
+                    `/api/analysis/word-count?text=${encodedText}`
+                ),
+
+                fetch(
+                    `/api/analysis/character-count?text=${encodedText}`
+                ),
+
+                fetch(
+                    `/api/analysis/sentence-count?text=${encodedText}`
+                ),
+
+                fetch(
+                    `/api/analysis/word-frequency?text=${encodedText}`
+                )
+
+            ]);
+
+
+            if (
+                !wordResponse.ok ||
+                !characterResponse.ok ||
+                !sentenceResponse.ok ||
+                !frequencyResponse.ok
+            ) {
+
+                throw new Error(
+                    "Unable to analyze the document."
+                );
+
+            }
+
+
+            const wordCount =
+                await wordResponse.json();
+
+            const characterCount =
+                await characterResponse.json();
+
+            const sentenceCount =
+                await sentenceResponse.json();
+
+            const frequency =
+                await frequencyResponse.json();
+
+
+            wordCountElement.textContent =
+                wordCount;
+
+            characterCountElement.textContent =
+                characterCount;
+
+            sentenceCountElement.textContent =
+                sentenceCount;
+
+
+            renderFrequency(
+                frequency
+            );
+
+
+            statusElement.textContent =
+                "Document analyzed successfully.";
+
+            statusElement.className =
+                "analysis-status success";
+
+
+        } catch (error) {
+
+            statusElement.textContent =
+                error.message;
+
+            statusElement.className =
+                "analysis-status error";
+
+        } finally {
+
+            analyzeButton.disabled =
+                false;
+
+            analyzeButton.textContent =
+                "Analyze Document";
+
+        }
+
+    }
+);
+
+
+function renderFrequency(
+    frequency
+) {
+
+    frequencyListElement.innerHTML = "";
+
+
+    const entries =
+        Object.entries(
+            frequency || {}
+        ).sort(
+            (a, b) =>
+                b[1] - a[1]
+        );
+
+
+    if (entries.length === 0) {
+
+        frequencyListElement.innerHTML = `
+
+            <div class="empty-frequency">
+                No words found.
+            </div>
+
+        `;
+
+        return;
+
+    }
+
+
+    entries.forEach(
+        ([word, count]) => {
+
+            const item =
+                document.createElement(
+                    "div"
+                );
+
+            item.className =
+                "frequency-item";
+
+
+            item.innerHTML = `
+
+                <span class="frequency-word">
+                    ${escapeHtml(word)}
+                </span>
+
+                <span class="frequency-count">
+                    ${count}
+                </span>
+
+            `;
+
+
+            frequencyListElement.appendChild(
+                item
+            );
+
+        }
+    );
+
+}
+
+
+function escapeHtml(value) {
+
+    return String(value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+
+}
+
+</script>
+
+</body>
+</html>

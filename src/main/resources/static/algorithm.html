@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>TEXTFORGE - Algorithm Lab</title>
+
+    <link rel="stylesheet" href="/css/style.css">
+
+    <style>
+        .algorithm-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-top: 25px;
+        }
+
+        .algorithm-card {
+            background: var(--viz-card, #111827);
+            border: 1px solid var(--viz-border, #334155);
+            border-radius: 14px;
+            padding: 24px;
+        }
+
+        .algorithm-card h3 {
+            margin-top: 0;
+            margin-bottom: 8px;
+        }
+
+        .algorithm-card p {
+            color: var(--viz-muted, #94a3b8);
+            line-height: 1.6;
+        }
+
+        .algorithm-form {
+            margin-top: 20px;
+        }
+
+        .result-box {
+            margin-top: 18px;
+            padding: 14px;
+            border-radius: 10px;
+            background: rgba(20, 184, 166, 0.1);
+            border: 1px solid rgba(20, 184, 166, 0.3);
+            min-height: 48px;
+        }
+
+        .result-value {
+            font-size: 22px;
+            font-weight: 700;
+        }
+
+        .algorithm-info {
+            margin-top: 25px;
+        }
+
+        .algorithm-info ul {
+            line-height: 1.8;
+            color: var(--viz-muted, #94a3b8);
+        }
+
+        .error-message {
+            color: #f87171;
+            margin-top: 12px;
+        }
+
+        @media (max-width: 900px) {
+            .algorithm-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<nav class="topbar">
+
+    <div class="brand">
+        <div class="brand-mark">TF</div>
+
+        <div>
+            <div class="brand-name">TEXTFORGE</div>
+            <div class="brand-subtitle">Advanced Algorithms Project</div>
+        </div>
+    </div>
+
+    <div class="nav">
+        <a href="/index.html">Dashboard</a>
+        <a href="/documents.html">Documents</a>
+        <a href="/search.html">Search Lab</a>
+        <a href="/analysis.html">Document Analysis</a>
+        <a href="/algorithm.html" class="active">Algorithm Lab</a>
+        <a href="/scheduler.html">Scheduler</a>
+    </div>
+
+</nav>
+
+<main class="page">
+
+    <section class="page-header">
+
+        <div>
+            <div class="eyebrow">ALGORITHM LAB</div>
+
+            <h1 class="page-title">
+                Algorithm Laboratory
+            </h1>
+
+            <p class="page-description">
+                Explore fundamental algorithms used in advanced
+                computing and algorithmic problem solving.
+            </p>
+        </div>
+
+        <div class="page-actions">
+            <a href="/index.html" class="btn btn-secondary">
+                ← Dashboard
+            </a>
+        </div>
+
+    </section>
+
+
+    <section class="algorithm-grid">
+
+        <!-- Fibonacci -->
+
+        <div class="algorithm-card">
+
+            <h3>Fibonacci</h3>
+
+            <p>
+                Calculate the nth Fibonacci number using
+                an iterative algorithm.
+            </p>
+
+            <div class="algorithm-form">
+
+                <div class="form-group">
+
+                    <label for="fibonacciInput">
+                        Enter n
+                    </label>
+
+                    <input
+                        id="fibonacciInput"
+                        type="number"
+                        min="0"
+                        placeholder="Example: 10"
+                    >
+
+                </div>
+
+                <button
+                    type="button"
+                    class="btn btn-primary"
+                    onclick="calculateFibonacci()"
+                >
+                    Calculate
+                </button>
+
+            </div>
+
+            <div
+                id="fibonacciResult"
+                class="result-box"
+            >
+                Result will appear here.
+            </div>
+
+        </div>
+
+
+        <!-- GCD -->
+
+        <div class="algorithm-card">
+
+            <h3>Greatest Common Divisor</h3>
+
+            <p>
+                Find the greatest common divisor of two
+                integers using Euclid's algorithm.
+            </p>
+
+            <div class="algorithm-form">
+
+                <div class="form-grid">
+
+                    <div class="form-group">
+
+                        <label for="gcdA">
+                            First number
+                        </label>
+
+                        <input
+                            id="gcdA"
+                            type="number"
+                            placeholder="Example: 48"
+                        >
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <label for="gcdB">
+                            Second number
+                        </label>
+
+                        <input
+                            id="gcdB"
+                            type="number"
+                            placeholder="Example: 18"
+                        >
+
+                    </div>
+
+                </div>
+
+                <button
+                    type="button"
+                    class="btn btn-primary"
+                    onclick="calculateGcd()"
+                >
+                    Calculate GCD
+                </button>
+
+            </div>
+
+            <div
+                id="gcdResult"
+                class="result-box"
+            >
+                Result will appear here.
+            </div>
+
+        </div>
+
+
+        <!-- Prime -->
+
+        <div class="algorithm-card">
+
+            <h3>Prime Number Check</h3>
+
+            <p>
+                Determine whether a number is prime using
+                an optimized divisibility check.
+            </p>
+
+            <div class="algorithm-form">
+
+                <div class="form-group">
+
+                    <label for="primeInput">
+                        Enter number
+                    </label>
+
+                    <input
+                        id="primeInput"
+                        type="number"
+                        placeholder="Example: 97"
+                    >
+
+                </div>
+
+                <button
+                    type="button"
+                    class="btn btn-primary"
+                    onclick="checkPrime()"
+                >
+                    Check Number
+                </button>
+
+            </div>
+
+            <div
+                id="primeResult"
+                class="result-box"
+            >
+                Result will appear here.
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <section class="card algorithm-info">
+
+        <h2 class="card-title">
+            Algorithms Included
+        </h2>
+
+        <p class="card-description">
+            These algorithms demonstrate common techniques used
+            in algorithm design and analysis.
+        </p>
+
+        <ul>
+
+            <li>
+                <strong>Fibonacci:</strong>
+                iterative dynamic computation.
+            </li>
+
+            <li>
+                <strong>GCD:</strong>
+                Euclidean algorithm.
+            </li>
+
+            <li>
+                <strong>Prime Check:</strong>
+                optimized trial division.
+            </li>
+
+        </ul>
+
+    </section>
+
+</main>
+
+
+<script>
+
+    async function calculateFibonacci() {
+
+        const input =
+            document.getElementById("fibonacciInput");
+
+        const result =
+            document.getElementById("fibonacciResult");
+
+        const n = Number(input.value);
+
+        if (!Number.isInteger(n) || n < 0) {
+
+            result.innerHTML =
+                "<div class='error-message'>" +
+                "Please enter a non-negative integer." +
+                "</div>";
+
+            return;
+        }
+
+        try {
+
+            const response = await fetch(
+                "/api/algorithms/fibonacci?n=" +
+                encodeURIComponent(n)
+            );
+
+            if (!response.ok) {
+                throw new Error("Fibonacci request failed.");
+            }
+
+            const value = await response.json();
+
+            result.innerHTML =
+                "<div>Fibonacci(" + n + ")</div>" +
+                "<div class='result-value'>" +
+                value +
+                "</div>";
+
+        } catch (error) {
+
+            result.innerHTML =
+                "<div class='error-message'>" +
+                "Unable to calculate Fibonacci: " +
+                error.message +
+                "</div>";
+
+        }
+    }
+
+
+    async function calculateGcd() {
+
+        const inputA =
+            document.getElementById("gcdA");
+
+        const inputB =
+            document.getElementById("gcdB");
+
+        const result =
+            document.getElementById("gcdResult");
+
+        const a = Number(inputA.value);
+        const b = Number(inputB.value);
+
+        if (
+            !Number.isInteger(a) ||
+            !Number.isInteger(b)
+        ) {
+
+            result.innerHTML =
+                "<div class='error-message'>" +
+                "Please enter two integers." +
+                "</div>";
+
+            return;
+        }
+
+        try {
+
+            const response = await fetch(
+                "/api/algorithms/gcd?a=" +
+                encodeURIComponent(a) +
+                "&b=" +
+                encodeURIComponent(b)
+            );
+
+            if (!response.ok) {
+                throw new Error("GCD request failed.");
+            }
+
+            const value = await response.json();
+
+            result.innerHTML =
+                "<div>GCD(" +
+                a +
+                ", " +
+                b +
+                ")</div>" +
+                "<div class='result-value'>" +
+                value +
+                "</div>";
+
+        } catch (error) {
+
+            result.innerHTML =
+                "<div class='error-message'>" +
+                "Unable to calculate GCD: " +
+                error.message +
+                "</div>";
+
+        }
+    }
+
+
+    async function checkPrime() {
+
+        const input =
+            document.getElementById("primeInput");
+
+        const result =
+            document.getElementById("primeResult");
+
+        const n = Number(input.value);
+
+        if (!Number.isInteger(n)) {
+
+            result.innerHTML =
+                "<div class='error-message'>" +
+                "Please enter an integer." +
+                "</div>";
+
+            return;
+        }
+
+        try {
+
+            const response = await fetch(
+                "/api/algorithms/prime?n=" +
+                encodeURIComponent(n)
+            );
+
+            if (!response.ok) {
+                throw new Error("Prime check request failed.");
+            }
+
+            const isPrime = await response.json();
+
+            if (isPrime) {
+
+                result.innerHTML =
+                    "<div>Result</div>" +
+                    "<div class='result-value'>" +
+                    n +
+                    " is PRIME</div>";
+
+            } else {
+
+                result.innerHTML =
+                    "<div>Result</div>" +
+                    "<div class='result-value'>" +
+                    n +
+                    " is NOT PRIME</div>";
+
+            }
+
+        } catch (error) {
+
+            result.innerHTML =
+                "<div class='error-message'>" +
+                "Unable to check number: " +
+                error.message +
+                "</div>";
+
+        }
+    }
+
+</script>
+
+</body>
+</html>

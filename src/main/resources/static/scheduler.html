@@ -1,0 +1,1066 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>TEXTFORGE - Scheduler</title>
+
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/scheduler.css">
+
+</head>
+
+<body>
+
+<div class="scheduler-container">
+
+    <!-- =====================================================
+         HEADER
+         ===================================================== -->
+
+    <header class="scheduler-header">
+
+        <h1>Task Scheduler</h1>
+
+        <p>
+            Select a saved document or enter a document manually.
+            TEXTFORGE will automatically generate and execute
+            the document-processing workflow.
+        </p>
+
+    </header>
+
+
+    <!-- =====================================================
+         SAVED DOCUMENTS
+         ===================================================== -->
+
+    <section class="scheduler-section">
+
+        <h2>Saved Documents</h2>
+
+        <p class="scheduler-section-description">
+            Select a document saved in the Documents module.
+        </p>
+
+        <div class="saved-document-controls">
+
+            <label for="savedDocument">
+                Saved Document
+            </label>
+
+            <select id="savedDocument">
+
+                <option value="">
+                    -- Select a saved document --
+                </option>
+
+            </select>
+
+        </div>
+
+        <div
+            id="documentLoadingMessage"
+            class="scheduler-message"
+            style="display: none;"
+        ></div>
+
+    </section>
+
+
+    <!-- =====================================================
+         DOCUMENT INPUT
+         ===================================================== -->
+
+    <section class="scheduler-section">
+
+        <h2>Document Input</h2>
+
+        <p class="scheduler-section-description">
+
+            The selected document will appear here.
+            You can also edit or paste your own document.
+
+        </p>
+
+        <textarea
+            id="documentInput"
+            class="document-input"
+            placeholder="Enter or paste your document here..."
+        ></textarea>
+
+    </section>
+
+
+    <!-- =====================================================
+         AUTOMATIC CORE TASKS
+         ===================================================== -->
+
+    <section class="scheduler-section">
+
+        <h2>Automatic Core Tasks</h2>
+
+        <p class="scheduler-section-description">
+
+            These tasks are automatically created for every document.
+
+        </p>
+
+        <div class="core-tasks">
+
+            <div class="core-task">
+
+                <div class="core-task-title">
+                    Text Cleaning
+                </div>
+
+                <div class="core-task-description">
+                    Removes unnecessary whitespace and prepares the document.
+                </div>
+
+            </div>
+
+
+            <div class="core-task">
+
+                <div class="core-task-title">
+                    Tokenization
+                </div>
+
+                <div class="core-task-description">
+                    Splits the cleaned document into individual tokens.
+                </div>
+
+            </div>
+
+
+            <div class="core-task">
+
+                <div class="core-task-title">
+                    Word Count
+                </div>
+
+                <div class="core-task-description">
+                    Calculates the total number of words.
+                </div>
+
+            </div>
+
+
+            <div class="core-task">
+
+                <div class="core-task-title">
+                    Sentence Count
+                </div>
+
+                <div class="core-task-description">
+                    Calculates the number of sentences.
+                </div>
+
+            </div>
+
+
+            <div class="core-task">
+
+                <div class="core-task-title">
+                    Word Frequency
+                </div>
+
+                <div class="core-task-description">
+                    Calculates the frequency of each word.
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         ADDITIONAL OPERATIONS
+         ===================================================== -->
+
+    <section class="scheduler-section">
+
+        <h2>Additional Operations</h2>
+
+        <p class="scheduler-section-description">
+
+            Select additional algorithms or analysis operations
+            you want to execute.
+
+        </p>
+
+
+        <!-- =================================================
+             SEARCH ALGORITHMS
+             ================================================= -->
+
+        <div class="operation-group">
+
+            <div class="operation-group-title">
+                Search Algorithms
+            </div>
+
+            <div class="operations-grid">
+
+                <label class="operation-option">
+
+                    <input
+                        type="checkbox"
+                        name="additionalOperations"
+                        value="NAIVE_SEARCH"
+                    >
+
+                    <span>
+                        Naive Search
+                    </span>
+
+                </label>
+
+
+                <label class="operation-option">
+
+                    <input
+                        type="checkbox"
+                        name="additionalOperations"
+                        value="KMP"
+                    >
+
+                    <span>
+                        KMP Search
+                    </span>
+
+                </label>
+
+
+                <label class="operation-option">
+
+                    <input
+                        type="checkbox"
+                        name="additionalOperations"
+                        value="Z_ALGORITHM"
+                    >
+
+                    <span>
+                        Z Algorithm
+                    </span>
+
+                </label>
+
+
+                <label class="operation-option">
+
+                    <input
+                        type="checkbox"
+                        name="additionalOperations"
+                        value="RABIN_KARP"
+                    >
+
+                    <span>
+                        Rabin-Karp
+                    </span>
+
+                </label>
+
+            </div>
+
+        </div>
+
+
+        <!-- =================================================
+             DOCUMENT ANALYSIS
+             ================================================= -->
+
+        <div class="operation-group">
+
+            <div class="operation-group-title">
+                Document Analysis
+            </div>
+
+            <div class="operations-grid">
+
+                <label class="operation-option">
+
+                    <input
+                        type="checkbox"
+                        name="additionalOperations"
+                        value="WORD_COUNT"
+                    >
+
+                    <span>
+                        Word Count
+                    </span>
+
+                </label>
+
+
+                <label class="operation-option">
+
+                    <input
+                        type="checkbox"
+                        name="additionalOperations"
+                        value="CHARACTER_COUNT"
+                    >
+
+                    <span>
+                        Character Count
+                    </span>
+
+                </label>
+
+
+                <label class="operation-option">
+
+                    <input
+                        type="checkbox"
+                        name="additionalOperations"
+                        value="SENTENCE_COUNT"
+                    >
+
+                    <span>
+                        Sentence Count
+                    </span>
+
+                </label>
+
+
+                <label class="operation-option">
+
+                    <input
+                        type="checkbox"
+                        name="additionalOperations"
+                        value="WORD_FREQUENCY"
+                    >
+
+                    <span>
+                        Word Frequency
+                    </span>
+
+                </label>
+
+            </div>
+
+        </div>
+
+
+        <!-- =================================================
+             SEARCH PATTERN
+             ================================================= -->
+
+        <div
+            id="searchPatternContainer"
+            class="search-pattern-container"
+            style="display: none;"
+        >
+
+            <label for="searchPattern">
+                Search Pattern
+            </label>
+
+            <input
+                type="text"
+                id="searchPattern"
+                placeholder="Enter the pattern to search for..."
+            >
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         GENERATE TASKS
+         ===================================================== -->
+
+    <section class="scheduler-section">
+
+        <div class="scheduler-actions">
+
+            <button
+                type="button"
+                id="generateTasksButton"
+                class="generate-button"
+            >
+                Generate Tasks
+            </button>
+
+        </div>
+
+
+        <div
+            id="schedulerMessage"
+            class="scheduler-message"
+            style="display: none;"
+        ></div>
+
+    </section>
+
+</div>
+
+
+<!-- =========================================================
+     JAVASCRIPT
+     ========================================================= -->
+
+<script>
+
+(function () {
+
+    "use strict";
+
+
+    /* =====================================================
+       ELEMENTS
+       ===================================================== */
+
+    const savedDocument =
+        document.getElementById("savedDocument");
+
+    const documentInput =
+        document.getElementById("documentInput");
+
+    const generateButton =
+        document.getElementById("generateTasksButton");
+
+    const searchPatternContainer =
+        document.getElementById("searchPatternContainer");
+
+    const searchPattern =
+        document.getElementById("searchPattern");
+
+    const schedulerMessage =
+        document.getElementById("schedulerMessage");
+
+    const documentLoadingMessage =
+        document.getElementById("documentLoadingMessage");
+
+
+    /* =====================================================
+       SHOW MESSAGE
+       ===================================================== */
+
+    function showMessage(message, type) {
+
+        schedulerMessage.textContent = message;
+
+        schedulerMessage.className =
+            "scheduler-message " +
+            (type || "");
+
+        schedulerMessage.style.display =
+            "block";
+    }
+
+
+    /* =====================================================
+       HIDE MESSAGE
+       ===================================================== */
+
+    function hideMessage() {
+
+        schedulerMessage.textContent = "";
+
+        schedulerMessage.style.display =
+            "none";
+    }
+
+
+    /* =====================================================
+       LOAD SAVED DOCUMENTS
+       ===================================================== */
+
+    async function loadSavedDocuments() {
+
+        documentLoadingMessage.style.display =
+            "block";
+
+        documentLoadingMessage.className =
+            "scheduler-message";
+
+        documentLoadingMessage.textContent =
+            "Loading saved documents...";
+
+
+        try {
+
+            const response =
+                await fetch("/api/documents");
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    "HTTP " + response.status
+                );
+            }
+
+
+            const documents =
+                await response.json();
+
+
+            console.log(
+                "Documents returned by backend:",
+                documents
+            );
+
+
+            /*
+             * Remove all old dropdown options.
+             */
+
+            savedDocument.innerHTML = "";
+
+
+            /*
+             * Add default option.
+             */
+
+            const defaultOption =
+                document.createElement("option");
+
+            defaultOption.value = "";
+
+            defaultOption.textContent =
+                "-- Select a saved document --";
+
+            savedDocument.appendChild(
+                defaultOption
+            );
+
+
+            /*
+             * Check if there are no documents.
+             */
+
+            if (
+                !Array.isArray(documents) ||
+                documents.length === 0
+            ) {
+
+                documentLoadingMessage.textContent =
+                    "No saved documents found.";
+
+                return;
+            }
+
+
+            /*
+             * Add every saved document.
+             *
+             * IMPORTANT:
+             * option.textContent uses doc.title.
+             */
+
+            documents.forEach(function (doc) {
+
+                const option =
+                    document.createElement("option");
+
+
+                /*
+                 * The option value is the document ID.
+                 */
+
+                option.value =
+                    doc.id;
+
+
+                /*
+                 * The visible dropdown text is
+                 * the title saved by the user.
+                 */
+
+                option.textContent =
+                    doc.title ||
+                    "Document " + doc.id;
+
+
+                /*
+                 * Store content on the option too.
+                 */
+
+                option.dataset.content =
+                    doc.content || "";
+
+
+                savedDocument.appendChild(
+                    option
+                );
+
+            });
+
+
+            documentLoadingMessage.textContent =
+                documents.length +
+                " saved document(s) loaded.";
+
+
+            console.log(
+                "Dropdown successfully populated."
+            );
+
+        }
+
+        catch (error) {
+
+            console.error(
+                "Error loading saved documents:",
+                error
+            );
+
+
+            documentLoadingMessage.textContent =
+                "Could not load saved documents.";
+
+
+            documentLoadingMessage.className =
+                "scheduler-message error";
+
+        }
+
+    }
+
+
+    /* =====================================================
+       LOAD SELECTED DOCUMENT
+       ===================================================== */
+
+    savedDocument.addEventListener(
+        "change",
+        async function () {
+
+            const selectedId =
+                savedDocument.value;
+
+
+            /*
+             * If default option is selected,
+             * clear textarea.
+             */
+
+            if (!selectedId) {
+
+                documentInput.value = "";
+
+                return;
+            }
+
+
+            try {
+
+                /*
+                 * Get all documents from backend.
+                 */
+
+                const response =
+                    await fetch("/api/documents");
+
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        "Could not load documents."
+                    );
+                }
+
+
+                const documents =
+                    await response.json();
+
+
+                /*
+                 * Find the selected document.
+                 */
+
+                const selectedDocument =
+                    documents.find(
+                        function (doc) {
+
+                            return String(doc.id) ===
+                                   String(selectedId);
+
+                        }
+                    );
+
+
+                if (!selectedDocument) {
+
+                    showMessage(
+                        "Selected document was not found.",
+                        "error"
+                    );
+
+                    return;
+                }
+
+
+                /*
+                 * Put the saved content into textarea.
+                 */
+
+                documentInput.value =
+                    selectedDocument.content || "";
+
+
+                hideMessage();
+
+
+                console.log(
+                    "Selected document:",
+                    selectedDocument.title
+                );
+
+            }
+
+            catch (error) {
+
+                console.error(
+                    "Error loading selected document:",
+                    error
+                );
+
+
+                showMessage(
+                    "Could not load the selected document.",
+                    "error"
+                );
+
+            }
+
+        }
+    );
+
+
+    /* =====================================================
+       SEARCH PATTERN VISIBILITY
+       ===================================================== */
+
+    function updateSearchPatternVisibility() {
+
+        const checkboxes =
+            document.querySelectorAll(
+                'input[name="additionalOperations"]'
+            );
+
+
+        let searchSelected = false;
+
+
+        checkboxes.forEach(
+            function (checkbox) {
+
+                if (
+                    checkbox.checked &&
+                    (
+                        checkbox.value === "NAIVE_SEARCH" ||
+                        checkbox.value === "KMP" ||
+                        checkbox.value === "Z_ALGORITHM" ||
+                        checkbox.value === "RABIN_KARP"
+                    )
+                ) {
+
+                    searchSelected = true;
+
+                }
+
+            }
+        );
+
+
+        if (searchSelected) {
+
+            searchPatternContainer.style.display =
+                "block";
+
+        }
+
+        else {
+
+            searchPatternContainer.style.display =
+                "none";
+
+            searchPattern.value = "";
+
+        }
+
+    }
+
+
+    /* =====================================================
+       OPERATION CHECKBOX LISTENERS
+       ===================================================== */
+
+    document
+        .querySelectorAll(
+            'input[name="additionalOperations"]'
+        )
+        .forEach(
+            function (checkbox) {
+
+                checkbox.addEventListener(
+                    "change",
+                    updateSearchPatternVisibility
+                );
+
+            }
+        );
+
+
+    /* =====================================================
+       GENERATE TASKS
+       ===================================================== */
+
+    generateButton.addEventListener(
+        "click",
+        async function () {
+
+            hideMessage();
+
+
+            /*
+             * Get document text.
+             */
+
+            const documentText =
+                documentInput.value.trim();
+
+
+            /*
+             * Document is required.
+             */
+
+            if (!documentText) {
+
+                showMessage(
+                    "Please select a saved document or enter a document.",
+                    "error"
+                );
+
+                return;
+            }
+
+
+            /*
+             * Get selected additional operations.
+             */
+
+            const selectedOperations =
+                Array.from(
+                    document.querySelectorAll(
+                        'input[name="additionalOperations"]:checked'
+                    )
+                ).map(
+                    function (checkbox) {
+
+                        return checkbox.value;
+
+                    }
+                );
+
+
+            /*
+             * Get search pattern.
+             */
+
+            const pattern =
+                searchPattern.value.trim();
+
+
+            /*
+             * Build scheduler request.
+             */
+
+            const requestData = {
+
+                document:
+                    documentText,
+
+                additionalOperations:
+                    selectedOperations,
+
+                searchPattern:
+                    pattern,
+
+                processors:
+                    4
+
+            };
+
+
+            /*
+             * Check whether a search operation
+             * has been selected.
+             */
+
+            const hasSearchOperation =
+                selectedOperations.some(
+                    function (operation) {
+
+                        return (
+                            operation === "NAIVE_SEARCH" ||
+                            operation === "KMP" ||
+                            operation === "Z_ALGORITHM" ||
+                            operation === "RABIN_KARP"
+                        );
+
+                    }
+                );
+
+
+            /*
+             * Search pattern required for
+             * search algorithms.
+             */
+
+            if (
+                hasSearchOperation &&
+                !pattern
+            ) {
+
+                showMessage(
+                    "Please enter a search pattern.",
+                    "error"
+                );
+
+                return;
+            }
+
+
+            /*
+             * Disable button while request
+             * is being processed.
+             */
+
+            generateButton.disabled =
+                true;
+
+            generateButton.textContent =
+                "Generating Tasks...";
+
+
+            try {
+
+                /*
+                 * Send request to Spring Boot.
+                 */
+
+                const response =
+                    await fetch(
+                        "/api/scheduler/generate",
+                        {
+                            method: "POST",
+
+                            headers: {
+                                "Content-Type":
+                                    "application/json"
+                            },
+
+                            body:
+                                JSON.stringify(
+                                    requestData
+                                )
+                        }
+                    );
+
+
+                /*
+                 * Check backend response.
+                 */
+
+                if (!response.ok) {
+
+                    const errorText =
+                        await response.text();
+
+                    throw new Error(
+                        errorText ||
+                        "Scheduler request failed."
+                    );
+
+                }
+
+
+                /*
+                 * Read JSON response.
+                 */
+
+                const result =
+                    await response.json();
+
+
+                console.log(
+                    "Scheduler result:",
+                    result
+                );
+
+
+                /*
+                 * Store result for results page.
+                 */
+
+                sessionStorage.setItem(
+                    "textforgeSchedulerResult",
+                    JSON.stringify(result)
+                );
+
+
+                /*
+                 * Open results page.
+                 */
+
+                window.location.href =
+                    "/schedule-results.html";
+
+            }
+
+            catch (error) {
+
+                console.error(
+                    "Scheduler error:",
+                    error
+                );
+
+
+                showMessage(
+                    "Failed to generate tasks: " +
+                    error.message,
+                    "error"
+                );
+
+            }
+
+            finally {
+
+                generateButton.disabled =
+                    false;
+
+                generateButton.textContent =
+                    "Generate Tasks";
+
+            }
+
+        }
+    );
+
+
+    /* =====================================================
+       INITIALIZE PAGE
+       ===================================================== */
+
+    loadSavedDocuments();
+
+})();
+
+</script>
+
+</body>
+
+</html>

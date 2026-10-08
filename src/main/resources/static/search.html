@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>TEXTFORGE - Search Lab</title>
+
+    <link rel="stylesheet" href="/css/style.css">
+
+    <style>
+        .search-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            margin-top: 25px;
+        }
+
+        .algorithm-option {
+            border: 1px solid var(--viz-border, #334155);
+            border-radius: 12px;
+            padding: 16px;
+            margin-top: 12px;
+            cursor: pointer;
+        }
+
+        .algorithm-option:hover {
+            border-color: var(--viz-accent, #14b8a6);
+        }
+
+        .algorithm-option input {
+            margin-right: 8px;
+        }
+
+        .result-panel {
+            margin-top: 24px;
+        }
+
+        .result-number {
+            font-size: 38px;
+            font-weight: 800;
+            margin-top: 12px;
+        }
+
+        .found {
+            color: #34d399;
+        }
+
+        .not-found {
+            color: #f87171;
+        }
+
+        .search-info {
+            margin-top: 20px;
+            color: var(--viz-muted, #94a3b8);
+            line-height: 1.7;
+        }
+
+        .error-message {
+            color: #f87171;
+            margin-top: 14px;
+        }
+
+        @media (max-width: 850px) {
+            .search-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<nav class="topbar">
+
+    <div class="brand">
+        <div class="brand-mark">TF</div>
+
+        <div>
+            <div class="brand-name">TEXTFORGE</div>
+            <div class="brand-subtitle">Advanced Algorithms Project</div>
+        </div>
+    </div>
+
+    <div class="nav">
+        <a href="/index.html">Dashboard</a>
+        <a href="/documents.html">Documents</a>
+        <a href="/search.html" class="active">Search Lab</a>
+        <a href="/analysis.html">Document Analysis</a>
+        <a href="/algorithm.html">Algorithm Lab</a>
+        <a href="/scheduler.html">Scheduler</a>
+    </div>
+
+</nav>
+
+
+<main class="page">
+
+    <section class="page-header">
+
+        <div>
+            <div class="eyebrow">SEARCH LAB</div>
+
+            <h1 class="page-title">
+                Pattern Search Laboratory
+            </h1>
+
+            <p class="page-description">
+                Compare different string-searching algorithms
+                against the same text and pattern.
+            </p>
+        </div>
+
+        <div class="page-actions">
+            <a
+                href="/index.html"
+                class="btn btn-secondary"
+            >
+                ← Dashboard
+            </a>
+        </div>
+
+    </section>
+
+
+    <section class="search-layout">
+
+        <!-- INPUT -->
+
+        <div class="card">
+
+            <h2 class="card-title">
+                Search Input
+            </h2>
+
+            <p class="card-description">
+                Enter a text and the pattern you want to find.
+            </p>
+
+            <div class="form-group">
+
+                <label for="searchText">
+                    Text
+                </label>
+
+                <textarea
+                    id="searchText"
+                    rows="9"
+                    placeholder="Example: The quick brown fox jumps over the lazy dog."
+                ></textarea>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="pattern">
+                    Pattern
+                </label>
+
+                <input
+                    id="pattern"
+                    type="text"
+                    placeholder="Example: brown"
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Search Algorithm
+                </label>
+
+                <label class="algorithm-option">
+
+                    <input
+                        type="radio"
+                        name="algorithm"
+                        value="naive"
+                        checked
+                    >
+
+                    <strong>Naive Search</strong>
+
+                </label>
+
+
+                <label class="algorithm-option">
+
+                    <input
+                        type="radio"
+                        name="algorithm"
+                        value="kmp"
+                    >
+
+                    <strong>KMP</strong>
+
+                </label>
+
+
+                <label class="algorithm-option">
+
+                    <input
+                        type="radio"
+                        name="algorithm"
+                        value="z"
+                    >
+
+                    <strong>Z Algorithm</strong>
+
+                </label>
+
+
+                <label class="algorithm-option">
+
+                    <input
+                        type="radio"
+                        name="algorithm"
+                        value="rabin-karp"
+                    >
+
+                    <strong>Rabin-Karp</strong>
+
+                </label>
+
+            </div>
+
+
+            <div class="button-row">
+
+                <button
+                    type="button"
+                    class="btn btn-primary"
+                    onclick="runSearch()"
+                >
+                    Search
+                </button>
+
+                <button
+                    type="button"
+                    class="btn btn-secondary"
+                    onclick="clearSearch()"
+                >
+                    Clear
+                </button>
+
+            </div>
+
+            <div
+                id="error"
+                class="error-message"
+            ></div>
+
+        </div>
+
+
+        <!-- INFORMATION -->
+
+        <div class="card">
+
+            <h2 class="card-title">
+                Search Algorithms
+            </h2>
+
+            <p class="search-info">
+                TEXTFORGE currently provides four classic
+                string-searching algorithms.
+            </p>
+
+            <div class="algorithm-option">
+                <strong>Naive Search</strong>
+                <p class="search-info">
+                    Checks possible starting positions one by one.
+                </p>
+            </div>
+
+            <div class="algorithm-option">
+                <strong>KMP</strong>
+                <p class="search-info">
+                    Uses the Longest Prefix Suffix table to
+                    avoid unnecessary comparisons.
+                </p>
+            </div>
+
+            <div class="algorithm-option">
+                <strong>Z Algorithm</strong>
+                <p class="search-info">
+                    Uses Z-values to identify pattern matches
+                    efficiently.
+                </p>
+            </div>
+
+            <div class="algorithm-option">
+                <strong>Rabin-Karp</strong>
+                <p class="search-info">
+                    Uses rolling hash values to locate patterns.
+                </p>
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- RESULT -->
+
+    <section class="card result-panel">
+
+        <h2 class="card-title">
+            Search Result
+        </h2>
+
+        <p
+            id="resultDescription"
+            class="card-description"
+        >
+            Run a search to see the result.
+        </p>
+
+        <div
+            id="resultNumber"
+            class="result-number"
+        >
+            —
+        </div>
+
+    </section>
+
+</main>
+
+
+<script>
+
+    async function runSearch() {
+
+        const text =
+            document.getElementById("searchText").value;
+
+        const pattern =
+            document.getElementById("pattern").value;
+
+        const error =
+            document.getElementById("error");
+
+        const resultDescription =
+            document.getElementById("resultDescription");
+
+        const resultNumber =
+            document.getElementById("resultNumber");
+
+        error.textContent = "";
+
+        resultNumber.className =
+            "result-number";
+
+        if (!text) {
+
+            error.textContent =
+                "Please enter some text.";
+
+            return;
+        }
+
+        if (!pattern) {
+
+            error.textContent =
+                "Please enter a search pattern.";
+
+            return;
+        }
+
+        const selected =
+            document.querySelector(
+                'input[name="algorithm"]:checked'
+            );
+
+        if (!selected) {
+
+            error.textContent =
+                "Please select a search algorithm.";
+
+            return;
+        }
+
+        const algorithm =
+            selected.value;
+
+        const endpoint =
+            "/api/search/" +
+            algorithm +
+            "?text=" +
+            encodeURIComponent(text) +
+            "&pattern=" +
+            encodeURIComponent(pattern);
+
+        try {
+
+            resultDescription.textContent =
+                "Running " +
+                getAlgorithmName(algorithm) +
+                "...";
+
+            const response =
+                await fetch(endpoint);
+
+            if (!response.ok) {
+
+                throw new Error(
+                    "Search request failed."
+                );
+            }
+
+            const position =
+                await response.json();
+
+            if (position >= 0) {
+
+                resultDescription.textContent =
+                    getAlgorithmName(algorithm) +
+                    " found the pattern at character index:";
+
+                resultNumber.textContent =
+                    position;
+
+                resultNumber.className =
+                    "result-number found";
+
+            } else {
+
+                resultDescription.textContent =
+                    getAlgorithmName(algorithm) +
+                    " could not find the pattern.";
+
+                resultNumber.textContent =
+                    "Not Found";
+
+                resultNumber.className =
+                    "result-number not-found";
+            }
+
+        } catch (errorObject) {
+
+            error.textContent =
+                errorObject.message;
+
+        }
+
+    }
+
+
+    function getAlgorithmName(algorithm) {
+
+        switch (algorithm) {
+
+            case "naive":
+                return "Naive Search";
+
+            case "kmp":
+                return "KMP";
+
+            case "z":
+                return "Z Algorithm";
+
+            case "rabin-karp":
+                return "Rabin-Karp";
+
+            default:
+                return "Search";
+
+        }
+
+    }
+
+
+    function clearSearch() {
+
+        document.getElementById("searchText").value = "";
+
+        document.getElementById("pattern").value = "";
+
+        document.getElementById("error").textContent = "";
+
+        document.getElementById(
+            "resultDescription"
+        ).textContent =
+            "Run a search to see the result.";
+
+        document.getElementById(
+            "resultNumber"
+        ).textContent = "—";
+
+        document.getElementById(
+            "resultNumber"
+        ).className = "result-number";
+
+    }
+
+</script>
+
+</body>
+</html>

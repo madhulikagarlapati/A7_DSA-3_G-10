@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>TEXTFORGE - Documents</title>
+
+    <link rel="stylesheet" href="/css/style.css">
+
+    <style>
+        .documents-layout {
+            display: grid;
+            grid-template-columns: 380px 1fr;
+            gap: 24px;
+            margin-top: 25px;
+        }
+
+        .document-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 18px;
+        }
+
+        .document-item {
+            padding: 16px;
+            border: 1px solid var(--viz-border, #334155);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: 0.2s ease;
+        }
+
+        .document-item:hover {
+            border-color: var(--viz-accent, #14b8a6);
+        }
+
+        .document-item h3 {
+            margin: 0 0 6px;
+        }
+
+        .document-item p {
+            margin: 0;
+            color: var(--viz-muted, #94a3b8);
+            font-size: 14px;
+        }
+
+        .document-viewer {
+            min-height: 400px;
+        }
+
+        .document-content {
+            white-space: pre-wrap;
+            line-height: 1.7;
+            color: var(--viz-text, #e5e7eb);
+            margin-top: 20px;
+        }
+
+        .empty-state {
+            padding: 30px;
+            text-align: center;
+            color: var(--viz-muted, #94a3b8);
+            border: 1px dashed var(--viz-border, #334155);
+            border-radius: 12px;
+        }
+
+        .document-meta {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+
+        .document-meta span {
+            font-size: 13px;
+            color: var(--viz-muted, #94a3b8);
+        }
+
+        .message {
+            margin-top: 14px;
+            font-size: 14px;
+        }
+
+        .message.success {
+            color: #34d399;
+        }
+
+        .message.error {
+            color: #f87171;
+        }
+
+        @media (max-width: 850px) {
+            .documents-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<nav class="topbar">
+
+    <div class="brand">
+        <div class="brand-mark">TF</div>
+
+        <div>
+            <div class="brand-name">TEXTFORGE</div>
+            <div class="brand-subtitle">Advanced Algorithms Project</div>
+        </div>
+    </div>
+
+    <div class="nav">
+        <a href="/index.html">Dashboard</a>
+        <a href="/documents.html" class="active">Documents</a>
+        <a href="/search.html">Search Lab</a>
+        <a href="/analysis.html">Document Analysis</a>
+        <a href="/algorithm.html">Algorithm Lab</a>
+        <a href="/scheduler.html">Scheduler</a>
+    </div>
+
+</nav>
+
+
+<main class="page">
+
+    <section class="page-header">
+
+        <div>
+            <div class="eyebrow">DOCUMENT WORKSPACE</div>
+
+            <h1 class="page-title">
+                Documents
+            </h1>
+
+            <p class="page-description">
+                Create, store and inspect text documents used by
+                TEXTFORGE.
+            </p>
+        </div>
+
+        <div class="page-actions">
+
+            <button
+                type="button"
+                class="btn btn-secondary"
+                onclick="loadDocuments()"
+            >
+                Refresh
+            </button>
+
+        </div>
+
+    </section>
+
+
+    <section class="documents-layout">
+
+
+        <!-- CREATE DOCUMENT -->
+
+        <div class="card">
+
+            <h2 class="card-title">
+                Create Document
+            </h2>
+
+            <p class="card-description">
+                Add a document to the TEXTFORGE workspace.
+            </p>
+
+            <form id="documentForm">
+
+                <div class="form-group">
+
+                    <label for="title">
+                        Document Title
+                    </label>
+
+                    <input
+                        id="title"
+                        type="text"
+                        placeholder="Example: Algorithm Notes"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="content">
+                        Document Content
+                    </label>
+
+                    <textarea
+                        id="content"
+                        rows="12"
+                        placeholder="Enter your document text..."
+                        required
+                    ></textarea>
+
+                </div>
+
+
+                <div class="button-row">
+
+                    <button
+                        type="submit"
+                        class="btn btn-primary"
+                    >
+                        Save Document
+                    </button>
+
+                    <button
+                        type="button"
+                        class="btn btn-secondary"
+                        onclick="clearForm()"
+                    >
+                        Clear
+                    </button>
+
+                </div>
+
+            </form>
+
+            <div id="formMessage"></div>
+
+        </div>
+
+
+        <!-- DOCUMENT LIST -->
+
+        <div class="card">
+
+            <h2 class="card-title">
+                Your Documents
+            </h2>
+
+            <p class="card-description">
+                Select a document to view its contents.
+            </p>
+
+            <div
+                id="documentList"
+                class="document-list"
+            >
+                Loading documents...
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- DOCUMENT VIEWER -->
+
+    <section class="card document-viewer">
+
+        <h2 class="card-title">
+            Document Viewer
+        </h2>
+
+        <div id="documentViewer">
+
+            <div class="empty-state">
+                Select a document from the list to view it.
+            </div>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+<script>
+
+    const form =
+        document.getElementById("documentForm");
+
+    form.addEventListener("submit", async function(event) {
+
+        event.preventDefault();
+
+        const title =
+            document.getElementById("title").value.trim();
+
+        const content =
+            document.getElementById("content").value.trim();
+
+        const message =
+            document.getElementById("formMessage");
+
+        message.className = "message";
+
+        if (!title || !content) {
+
+            message.className =
+                "message error";
+
+            message.textContent =
+                "Please enter both a title and document content.";
+
+            return;
+        }
+
+        try {
+
+            const response = await fetch(
+                "/api/documents",
+                {
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+
+                    body: JSON.stringify({
+                        title: title,
+                        content: content
+                    })
+                }
+            );
+
+            if (!response.ok) {
+
+                throw new Error(
+                    "Unable to save document."
+                );
+            }
+
+            const documentData =
+                await response.json();
+
+            message.className =
+                "message success";
+
+            message.textContent =
+                "Document saved successfully.";
+
+            clearForm();
+
+            await loadDocuments();
+
+            showDocument(documentData);
+
+        } catch (error) {
+
+            message.className =
+                "message error";
+
+            message.textContent =
+                error.message;
+
+        }
+
+    });
+
+
+    async function loadDocuments() {
+
+        const list =
+            document.getElementById("documentList");
+
+        list.innerHTML =
+            "Loading documents...";
+
+        try {
+
+            const response =
+                await fetch("/api/documents");
+
+            if (!response.ok) {
+
+                throw new Error(
+                    "Unable to load documents."
+                );
+            }
+
+            const documents =
+                await response.json();
+
+            if (
+                !Array.isArray(documents) ||
+                documents.length === 0
+            ) {
+
+                list.innerHTML = `
+                    <div class="empty-state">
+                        No documents found.<br><br>
+                        Create your first document using
+                        the form on the left.
+                    </div>
+                `;
+
+                return;
+            }
+
+            list.innerHTML = "";
+
+            documents.forEach(function(documentData) {
+
+                const item =
+                    document.createElement("div");
+
+                item.className =
+                    "document-item";
+
+                const preview =
+                    documentData.content
+                        ? documentData.content.substring(0, 100)
+                        : "";
+
+                item.innerHTML = `
+                    <h3>${escapeHtml(documentData.title)}</h3>
+
+                    <p>
+                        ${escapeHtml(preview)}
+                        ${documentData.content &&
+                          documentData.content.length > 100
+                            ? "..."
+                            : ""}
+                    </p>
+
+                    <div class="document-meta">
+                        <span>
+                            ID: ${escapeHtml(String(documentData.id))}
+                        </span>
+
+                        <span>
+                            ${countWords(documentData.content)} words
+                        </span>
+                    </div>
+                `;
+
+                item.addEventListener(
+                    "click",
+                    function() {
+                        showDocument(documentData);
+                    }
+                );
+
+                list.appendChild(item);
+
+            });
+
+        } catch (error) {
+
+            list.innerHTML = `
+                <div class="empty-state">
+                    Failed to load documents.<br><br>
+                    ${escapeHtml(error.message)}
+                </div>
+            `;
+
+        }
+
+    }
+
+
+    function showDocument(documentData) {
+
+        const viewer =
+            document.getElementById("documentViewer");
+
+        viewer.innerHTML = `
+            <h2>
+                ${escapeHtml(documentData.title)}
+            </h2>
+
+            <div class="document-meta">
+                <span>
+                    Document ID:
+                    ${escapeHtml(String(documentData.id))}
+                </span>
+
+                <span>
+                    ${countWords(documentData.content)} words
+                </span>
+
+                <span>
+                    ${documentData.content.length} characters
+                </span>
+            </div>
+
+            <div class="document-content">
+                ${escapeHtml(documentData.content)}
+            </div>
+        `;
+
+    }
+
+
+    function clearForm() {
+
+        document.getElementById("title").value = "";
+
+        document.getElementById("content").value = "";
+
+    }
+
+
+    function countWords(text) {
+
+        if (!text || !text.trim()) {
+            return 0;
+        }
+
+        return text.trim().split(/\s+/).length;
+
+    }
+
+
+    function escapeHtml(value) {
+
+        return String(value)
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+
+    }
+
+
+    loadDocuments();
+
+</script>
+
+</body>
+</html>

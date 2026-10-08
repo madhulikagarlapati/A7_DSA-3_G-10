@@ -1,0 +1,2262 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>TEXTFORGE - Schedule Results</title>
+
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/scheduler.css">
+
+    <style>
+
+        .results-page {
+            max-width: 1250px;
+            margin: 0 auto;
+            padding: 30px 20px 60px;
+        }
+
+        .results-header {
+            margin-bottom: 25px;
+        }
+
+        .results-header h1 {
+            margin-bottom: 8px;
+        }
+
+        .results-header p {
+            color: #9ca3af;
+            margin: 0 0 15px;
+        }
+
+        .results-section {
+            background: #111827;
+            border: 1px solid #273244;
+            border-radius: 14px;
+            padding: 22px;
+            margin-bottom: 22px;
+        }
+
+        .section-heading {
+            margin: 0 0 18px;
+            font-size: 19px;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns:
+                repeat(auto-fit, minmax(150px, 1fr));
+            gap: 12px;
+        }
+
+        .metric-card {
+            background: #0b1220;
+            border: 1px solid #273244;
+            border-radius: 10px;
+            padding: 16px;
+        }
+
+        .metric-label {
+            color: #9ca3af;
+            font-size: 12px;
+            margin-bottom: 7px;
+        }
+
+        .metric-value {
+            color: #f9fafb;
+            font-size: 23px;
+            font-weight: 700;
+        }
+
+        .status-summary {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 18px;
+        }
+
+        .status-pill {
+            padding: 7px 12px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .status-completed {
+            background: #123522;
+            color: #86efac;
+        }
+
+        .status-running {
+            background: #332b0d;
+            color: #fde68a;
+        }
+
+        .status-waiting {
+            background: #1f2937;
+            color: #d1d5db;
+        }
+
+        .status-failed {
+            background: #3b1515;
+            color: #fca5a5;
+        }
+
+        /* =================================================
+           OPERATION RESULTS
+           ================================================= */
+
+        .operation-results {
+            display: grid;
+            grid-template-columns:
+                repeat(auto-fit, minmax(280px, 1fr));
+            gap: 15px;
+        }
+
+        .operation-result-card {
+            background: #0b1220;
+            border: 1px solid #273244;
+            border-radius: 12px;
+            padding: 18px;
+        }
+
+        .operation-result-card.user-operation {
+            border-left: 4px solid #c084fc;
+        }
+
+        .operation-result-card.automatic-operation {
+            border-left: 4px solid #60a5fa;
+        }
+
+        .operation-result-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .operation-result-title {
+            color: #f9fafb;
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+        .operation-result-source {
+            font-size: 10px;
+            font-weight: 700;
+            padding: 5px 8px;
+            border-radius: 999px;
+            white-space: nowrap;
+        }
+
+        .operation-result-source.user {
+            background: #32184d;
+            color: #d8b4fe;
+        }
+
+        .operation-result-source.auto {
+            background: #172554;
+            color: #93c5fd;
+        }
+
+        .operation-result-status {
+            margin-bottom: 12px;
+        }
+
+        .operation-result-label {
+            color: #9ca3af;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            margin-bottom: 6px;
+        }
+
+        .operation-result-value {
+            color: #e5e7eb;
+            background: #111827;
+            border: 1px solid #273244;
+            border-radius: 8px;
+            padding: 12px;
+            line-height: 1.55;
+            font-size: 13px;
+            white-space: pre-wrap;
+            overflow-wrap: anywhere;
+        }
+
+        .operation-result-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .operation-meta-item {
+            color: #9ca3af;
+            background: #111827;
+            border: 1px solid #273244;
+            border-radius: 6px;
+            padding: 5px 8px;
+            font-size: 11px;
+        }
+
+        .no-operation-results {
+            color: #9ca3af;
+            padding: 10px 0;
+        }
+
+        /* =================================================
+           FLOW
+           ================================================= */
+
+        .flow-container {
+            overflow-x: auto;
+            padding: 10px 0 15px;
+        }
+
+        .flow {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            min-width: max-content;
+        }
+
+        .flow-node {
+            min-width: 150px;
+            max-width: 190px;
+            padding: 13px;
+            background: #0b1220;
+            border: 1px solid #374151;
+            border-radius: 10px;
+        }
+
+        .flow-node strong {
+            display: block;
+            color: #f9fafb;
+            margin-bottom: 5px;
+        }
+
+        .flow-node span {
+            display: block;
+            color: #9ca3af;
+            font-size: 12px;
+        }
+
+        .flow-arrow {
+            color: #60a5fa;
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        /* =================================================
+           DEPENDENCIES
+           ================================================= */
+
+        .dependency-list {
+            display: grid;
+            gap: 10px;
+        }
+
+        .dependency-item {
+            padding: 12px 14px;
+            border-radius: 9px;
+            background: #0b1220;
+            border: 1px solid #273244;
+        }
+
+        .dependency-item strong {
+            color: #f9fafb;
+        }
+
+        .dependency-item span {
+            color: #9ca3af;
+            font-size: 13px;
+        }
+
+        /* =================================================
+           TABLE
+           ================================================= */
+
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+        .schedule-table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 1050px;
+        }
+
+        .schedule-table th {
+            background: #0b1220;
+            color: #d1d5db;
+            text-align: left;
+            padding: 12px;
+            font-size: 12px;
+            border-bottom: 1px solid #374151;
+            white-space: nowrap;
+        }
+
+        .schedule-table td {
+            padding: 12px;
+            border-bottom: 1px solid #1f2937;
+            color: #e5e7eb;
+            font-size: 13px;
+            vertical-align: top;
+        }
+
+        .schedule-table tbody tr:hover {
+            background: #101827;
+        }
+
+        .source-auto {
+            color: #60a5fa;
+        }
+
+        .source-user {
+            color: #c084fc;
+        }
+
+        .table-status {
+            display: inline-block;
+            padding: 5px 9px;
+            border-radius: 999px;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .result-text {
+            color: #9ca3af;
+            font-size: 12px;
+            max-width: 230px;
+            white-space: pre-wrap;
+            overflow-wrap: anywhere;
+        }
+
+        /* =================================================
+           GANTT
+           ================================================= */
+
+        .gantt-wrapper {
+            overflow-x: auto;
+        }
+
+        .gantt {
+            min-width: 850px;
+        }
+
+        .gantt-row {
+            display: grid;
+            grid-template-columns: 90px 1fr;
+            min-height: 58px;
+            border-bottom: 1px solid #1f2937;
+        }
+
+        .gantt-label {
+            display: flex;
+            align-items: center;
+            color: #d1d5db;
+            font-size: 13px;
+            font-weight: 700;
+            padding-right: 10px;
+        }
+
+        .gantt-track {
+            position: relative;
+            min-height: 58px;
+            background:
+                repeating-linear-gradient(
+                    to right,
+                    #111827 0,
+                    #111827 79px,
+                    #1f2937 80px
+                );
+            border-left: 1px solid #273244;
+        }
+
+        .gantt-task {
+            position: absolute;
+            top: 9px;
+            height: 40px;
+            min-width: 35px;
+            border-radius: 7px;
+            background: #2563eb;
+            border: 1px solid #60a5fa;
+            padding: 5px 8px;
+            box-sizing: border-box;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            font-size: 11px;
+            color: white;
+        }
+
+        .gantt-scale {
+            display: grid;
+            grid-template-columns: 90px 1fr;
+            margin-bottom: 4px;
+        }
+
+        .scale-track {
+            display: flex;
+            color: #6b7280;
+            font-size: 10px;
+        }
+
+        .scale-number {
+            width: 80px;
+            flex-shrink: 0;
+        }
+
+        .back-button {
+            display: inline-block;
+            text-decoration: none;
+            border: 1px solid #374151;
+            color: #d1d5db;
+            padding: 10px 16px;
+            border-radius: 8px;
+            margin-top: 3px;
+        }
+
+        .back-button:hover {
+            background: #1f2937;
+        }
+
+        .empty-state {
+            color: #9ca3af;
+            padding: 15px 0;
+        }
+
+        @media (max-width: 700px) {
+
+            .results-page {
+                padding: 20px 14px 40px;
+            }
+
+            .results-section {
+                padding: 17px;
+            }
+
+            .operation-results {
+                grid-template-columns: 1fr;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<header>
+
+    <nav class="navbar">
+
+        <div class="logo">
+            TEXTFORGE
+        </div>
+
+        <div class="nav-links">
+
+            <a href="/index.html">
+                Home
+            </a>
+
+            <a href="/documents.html">
+                Documents
+            </a>
+
+            <a href="/search.html">
+                Search
+            </a>
+
+            <a href="/analysis.html">
+                Analysis
+            </a>
+
+            <a href="/algorithm.html">
+                Algorithms
+            </a>
+
+            <a href="/scheduler.html">
+                Scheduler
+            </a>
+
+        </div>
+
+    </nav>
+
+</header>
+
+
+<main class="results-page">
+
+
+    <!-- =====================================================
+         HEADER
+         ===================================================== -->
+
+    <section class="results-header">
+
+        <h1>
+            Scheduler Results
+        </h1>
+
+        <p>
+            Automatically generated task workflow,
+            dependency flow, processor schedule and
+            execution results.
+        </p>
+
+        <a
+            class="back-button"
+            href="/scheduler.html"
+        >
+            ← Back to Scheduler
+        </a>
+
+    </section>
+
+
+    <!-- =====================================================
+         METRICS
+         ===================================================== -->
+
+    <section class="results-section">
+
+        <h2 class="section-heading">
+            Schedule Summary
+        </h2>
+
+        <div class="metrics-grid">
+
+            <div class="metric-card">
+
+                <div class="metric-label">
+                    Tasks Scheduled
+                </div>
+
+                <div
+                    id="tasksScheduled"
+                    class="metric-value"
+                >
+                    0
+                </div>
+
+            </div>
+
+
+            <div class="metric-card">
+
+                <div class="metric-label">
+                    Processors
+                </div>
+
+                <div
+                    id="processors"
+                    class="metric-value"
+                >
+                    0
+                </div>
+
+            </div>
+
+
+            <div class="metric-card">
+
+                <div class="metric-label">
+                    Sequential Time
+                </div>
+
+                <div
+                    id="sequentialTime"
+                    class="metric-value"
+                >
+                    0
+                </div>
+
+            </div>
+
+
+            <div class="metric-card">
+
+                <div class="metric-label">
+                    Makespan
+                </div>
+
+                <div
+                    id="makespan"
+                    class="metric-value"
+                >
+                    0
+                </div>
+
+            </div>
+
+
+            <div class="metric-card">
+
+                <div class="metric-label">
+                    Time Saved
+                </div>
+
+                <div
+                    id="timeSaved"
+                    class="metric-value"
+                >
+                    0
+                </div>
+
+            </div>
+
+
+            <div class="metric-card">
+
+                <div class="metric-label">
+                    Improvement
+                </div>
+
+                <div
+                    id="improvement"
+                    class="metric-value"
+                >
+                    0%
+                </div>
+
+            </div>
+
+
+            <div class="metric-card">
+
+                <div class="metric-label">
+                    CPU Utilization
+                </div>
+
+                <div
+                    id="cpuUtilization"
+                    class="metric-value"
+                >
+                    0%
+                </div>
+
+            </div>
+
+
+            <div class="metric-card">
+
+                <div class="metric-label">
+                    Run ID
+                </div>
+
+                <div
+                    id="runId"
+                    class="metric-value"
+                    style="font-size:14px;"
+                >
+                    -
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         EXECUTION STATUS
+         ===================================================== -->
+
+    <section class="results-section">
+
+        <h2 class="section-heading">
+            Execution Status
+        </h2>
+
+        <div
+            id="statusSummary"
+            class="status-summary"
+        ></div>
+
+    </section>
+
+
+    <!-- =====================================================
+         OPERATION RESULTS
+         ===================================================== -->
+
+    <section class="results-section">
+
+        <h2 class="section-heading">
+            Operation Results
+        </h2>
+
+        <p style="color:#9ca3af; margin-bottom:18px;">
+
+            Actual outputs produced by the automatically generated
+            tasks and the additional operations selected by the user.
+
+        </p>
+
+        <div
+            id="operationResults"
+            class="operation-results"
+        ></div>
+
+    </section>
+
+
+    <!-- =====================================================
+         DEPENDENCY FLOW
+         ===================================================== -->
+
+    <section class="results-section">
+
+        <h2 class="section-heading">
+            Dynamic Task Flow / Dependency Flow
+        </h2>
+
+        <p style="color:#9ca3af;">
+
+            This flow is generated from the actual task dependencies
+            returned by the backend.
+
+        </p>
+
+        <div
+            id="flowContainer"
+            class="flow-container"
+        ></div>
+
+    </section>
+
+
+    <!-- =====================================================
+         DEPENDENCY DETAILS
+         ===================================================== -->
+
+    <section class="results-section">
+
+        <h2 class="section-heading">
+            Dependency Details
+        </h2>
+
+        <div
+            id="dependencyList"
+            class="dependency-list"
+        ></div>
+
+    </section>
+
+
+    <!-- =====================================================
+         GANTT
+         ===================================================== -->
+
+    <section class="results-section">
+
+        <h2 class="section-heading">
+            Processor Gantt Chart
+        </h2>
+
+        <div class="gantt-wrapper">
+
+            <div class="gantt">
+
+                <div class="gantt-scale">
+
+                    <div></div>
+
+                    <div
+                        id="ganttScale"
+                        class="scale-track"
+                    ></div>
+
+                </div>
+
+                <div
+                    id="ganttContainer"
+                ></div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         COMPLETE SCHEDULE
+         ===================================================== -->
+
+    <section class="results-section">
+
+        <h2 class="section-heading">
+            Complete Schedule
+        </h2>
+
+        <p style="color:#9ca3af;">
+
+            This table combines automatically generated tasks
+            and user-selected operations.
+
+        </p>
+
+        <div class="table-wrapper">
+
+            <table class="schedule-table">
+
+                <thead>
+
+                <tr>
+
+                    <th>
+                        ID
+                    </th>
+
+                    <th>
+                        Task
+                    </th>
+
+                    <th>
+                        Source
+                    </th>
+
+                    <th>
+                        Priority
+                    </th>
+
+                    <th>
+                        Duration
+                    </th>
+
+                    <th>
+                        Dependencies
+                    </th>
+
+                    <th>
+                        CPU
+                    </th>
+
+                    <th>
+                        Start
+                    </th>
+
+                    <th>
+                        End
+                    </th>
+
+                    <th>
+                        Status
+                    </th>
+
+                    <th>
+                        Result
+                    </th>
+
+                </tr>
+
+                </thead>
+
+                <tbody
+                    id="scheduleTableBody"
+                ></tbody>
+
+            </table>
+
+        </div>
+
+    </section>
+
+
+</main>
+
+
+<script>
+
+"use strict";
+
+
+/* =========================================================
+   READ STORED RESULT
+   ========================================================= */
+
+const rawData =
+    sessionStorage.getItem(
+        "textforgeSchedulerResult"
+    );
+
+
+if (!rawData) {
+
+    document.body.innerHTML = `
+
+        <main style="
+            max-width:700px;
+            margin:100px auto;
+            padding:20px;
+            color:white;
+            text-align:center;
+        ">
+
+            <h1>
+                No Scheduler Results
+            </h1>
+
+            <p style="color:#9ca3af;">
+
+                Please generate a schedule first.
+
+            </p>
+
+            <a
+                href="/scheduler.html"
+                style="color:#60a5fa;"
+            >
+
+                Return to Scheduler
+
+            </a>
+
+        </main>
+
+    `;
+
+} else {
+
+    try {
+
+        const data =
+            JSON.parse(rawData);
+
+        renderResults(data);
+
+    }
+
+    catch (error) {
+
+        console.error(error);
+
+        document.body.innerHTML = `
+
+            <main style="
+                max-width:700px;
+                margin:100px auto;
+                padding:20px;
+                color:white;
+                text-align:center;
+            ">
+
+                <h1>
+                    Unable to Read Results
+                </h1>
+
+                <p style="color:#9ca3af;">
+
+                    The stored scheduler result is invalid.
+
+                </p>
+
+                <a
+                    href="/scheduler.html"
+                    style="color:#60a5fa;"
+                >
+
+                    Return to Scheduler
+
+                </a>
+
+            </main>
+
+        `;
+
+    }
+
+}
+
+
+/* =========================================================
+   MAIN RENDER
+   ========================================================= */
+
+function renderResults(data) {
+
+    const tasks =
+        Array.isArray(data.tasks)
+            ? data.tasks
+            : [];
+
+    const schedule =
+        Array.isArray(data.schedule)
+            ? data.schedule
+            : [];
+
+    const results =
+        Array.isArray(data.results)
+            ? data.results
+            : [];
+
+
+    /* =====================================================
+       METRICS
+       ===================================================== */
+
+    setText(
+        "tasksScheduled",
+        tasks.length
+    );
+
+    setText(
+        "processors",
+        data.processors || 0
+    );
+
+    setText(
+        "sequentialTime",
+        data.sequentialTime || 0
+    );
+
+    setText(
+        "makespan",
+        data.makespan || 0
+    );
+
+    setText(
+        "timeSaved",
+        data.timeSaved || 0
+    );
+
+    setText(
+        "improvement",
+        (data.improvement || 0) + "%"
+    );
+
+    setText(
+        "cpuUtilization",
+        (data.cpuUtilization || 0) + "%"
+    );
+
+    setText(
+        "runId",
+        data.runId || "-"
+    );
+
+
+    /* =====================================================
+       STATUS
+       ===================================================== */
+
+    renderStatusSummary(
+        results
+    );
+
+
+    /* =====================================================
+       OPERATION OUTPUTS
+       ===================================================== */
+
+    renderOperationResults(
+        tasks,
+        results
+    );
+
+
+    /* =====================================================
+       FLOW
+       ===================================================== */
+
+    renderFlow(
+        tasks
+    );
+
+
+    /* =====================================================
+       DEPENDENCIES
+       ===================================================== */
+
+    renderDependencies(
+        tasks
+    );
+
+
+    /* =====================================================
+       GANTT
+       ===================================================== */
+
+    renderGantt(
+        schedule
+    );
+
+
+    /* =====================================================
+       TABLE
+       ===================================================== */
+
+    renderScheduleTable(
+        tasks,
+        schedule,
+        results
+    );
+
+}
+
+
+/* =========================================================
+   SET TEXT
+   ========================================================= */
+
+function setText(
+    id,
+    value
+) {
+
+    const element =
+        document.getElementById(id);
+
+    if (element) {
+
+        element.textContent =
+            value;
+
+    }
+
+}
+
+
+/* =========================================================
+   STATUS SUMMARY
+   ========================================================= */
+
+function renderStatusSummary(
+    results
+) {
+
+    const container =
+        document.getElementById(
+            "statusSummary"
+        );
+
+    container.innerHTML = "";
+
+
+    const counts = {
+
+        Waiting: 0,
+
+        Running: 0,
+
+        Completed: 0,
+
+        Failed: 0
+
+    };
+
+
+    results.forEach(
+        result => {
+
+            if (
+                Object.prototype.hasOwnProperty
+                    .call(
+                        counts,
+                        result.status
+                    )
+            ) {
+
+                counts[
+                    result.status
+                ]++;
+
+            }
+
+        }
+    );
+
+
+    Object.entries(
+        counts
+    ).forEach(
+        ([status, count]) => {
+
+            if (count === 0) {
+                return;
+            }
+
+
+            const pill =
+                document.createElement(
+                    "div"
+                );
+
+
+            pill.className =
+                "status-pill " +
+                statusClass(status);
+
+
+            pill.textContent =
+                status +
+                ": " +
+                count;
+
+
+            container.appendChild(
+                pill
+            );
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   OPERATION RESULTS
+   ========================================================= */
+
+function renderOperationResults(
+    tasks,
+    results
+) {
+
+    const container =
+        document.getElementById(
+            "operationResults"
+        );
+
+    container.innerHTML = "";
+
+
+    if (!results.length) {
+
+        container.innerHTML = `
+
+            <div class="no-operation-results">
+
+                No operation results are available.
+
+            </div>
+
+        `;
+
+        return;
+    }
+
+
+    /*
+     * Create a map so task information and result
+     * information can be combined.
+     */
+
+    const resultMap =
+        new Map();
+
+
+    results.forEach(
+        result => {
+
+            resultMap.set(
+                result.taskId,
+                result
+            );
+
+        }
+    );
+
+
+    /*
+     * Display every executed operation.
+     *
+     * User Selected operations are especially
+     * visible with the purple border.
+     */
+
+    tasks.forEach(
+        task => {
+
+            const result =
+                resultMap.get(
+                    task.id
+                );
+
+
+            if (!result) {
+                return;
+            }
+
+
+            const card =
+                document.createElement(
+                    "div"
+                );
+
+
+            const isUserOperation =
+                task.source ===
+                "User Selected";
+
+
+            card.className =
+                "operation-result-card " +
+                (
+                    isUserOperation
+                        ? "user-operation"
+                        : "automatic-operation"
+                );
+
+
+            const sourceClass =
+                isUserOperation
+                    ? "user"
+                    : "auto";
+
+
+            const sourceText =
+                isUserOperation
+                    ? "USER SELECTED"
+                    : "AUTOMATIC";
+
+
+            const status =
+                result.status ||
+                "Waiting";
+
+
+            let output =
+                result.result;
+
+
+            /*
+             * Handle empty/null results.
+             */
+
+            if (
+                output === null ||
+                output === undefined ||
+                String(output).trim() === ""
+            ) {
+
+                output =
+                    "No output returned.";
+
+            }
+
+
+            /*
+             * Convert objects/arrays into readable
+             * JSON when the backend returns one.
+             */
+
+            if (
+                typeof output === "object"
+            ) {
+
+                try {
+
+                    output =
+                        JSON.stringify(
+                            output,
+                            null,
+                            2
+                        );
+
+                }
+
+                catch (error) {
+
+                    output =
+                        String(output);
+
+                }
+
+            }
+
+
+            card.innerHTML = `
+
+                <div class="operation-result-header">
+
+                    <div class="operation-result-title">
+
+                        ${escapeHtml(
+                            task.name
+                        )}
+
+                    </div>
+
+                    <div class="operation-result-source ${sourceClass}">
+
+                        ${sourceText}
+
+                    </div>
+
+                </div>
+
+
+                <div class="operation-result-status">
+
+                    <span class="
+                        table-status
+                        ${statusClass(status)}
+                    ">
+
+                        ${escapeHtml(status)}
+
+                    </span>
+
+                </div>
+
+
+                <div class="operation-result-label">
+
+                    Output
+
+                </div>
+
+
+                <div class="operation-result-value">
+
+                    ${escapeHtml(
+                        output
+                    )}
+
+                </div>
+
+
+                <div class="operation-result-meta">
+
+                    <div class="operation-meta-item">
+
+                        Task ID:
+                        ${escapeHtml(task.id)}
+
+                    </div>
+
+
+                    <div class="operation-meta-item">
+
+                        Priority:
+                        ${task.priority}
+
+                    </div>
+
+
+                    <div class="operation-meta-item">
+
+                        Duration:
+                        ${task.duration}
+
+                    </div>
+
+
+                </div>
+
+            `;
+
+
+            container.appendChild(
+                card
+            );
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   STATUS CLASS
+   ========================================================= */
+
+function statusClass(
+    status
+) {
+
+    switch (status) {
+
+        case "Completed":
+            return "status-completed";
+
+        case "Running":
+            return "status-running";
+
+        case "Waiting":
+            return "status-waiting";
+
+        case "Failed":
+            return "status-failed";
+
+        default:
+            return "status-waiting";
+
+    }
+
+}
+
+
+/* =========================================================
+   DYNAMIC FLOW
+   ========================================================= */
+
+function renderFlow(
+    tasks
+) {
+
+    const container =
+        document.getElementById(
+            "flowContainer"
+        );
+
+    container.innerHTML = "";
+
+
+    if (!tasks.length) {
+
+        container.innerHTML = `
+
+            <div class="empty-state">
+
+                No tasks available.
+
+            </div>
+
+        `;
+
+        return;
+
+    }
+
+
+    const roots =
+        tasks.filter(
+            task =>
+                !task.dependencies ||
+                task.dependencies.length === 0
+        );
+
+
+    const ordered = [];
+
+    const visited =
+        new Set();
+
+
+    function visit(task) {
+
+        if (
+            !task ||
+            visited.has(task.id)
+        ) {
+
+            return;
+
+        }
+
+
+        visited.add(
+            task.id
+        );
+
+
+        ordered.push(
+            task
+        );
+
+
+        tasks
+            .filter(
+                candidate =>
+                    candidate.dependencies &&
+                    candidate.dependencies.includes(
+                        task.id
+                    )
+            )
+            .forEach(
+                dependent =>
+                    visit(dependent)
+            );
+
+    }
+
+
+    roots.forEach(
+        root =>
+            visit(root)
+    );
+
+
+    /*
+     * Include anything not reached.
+     */
+
+    tasks.forEach(
+        task =>
+            visit(task)
+    );
+
+
+    const flow =
+        document.createElement(
+            "div"
+        );
+
+
+    flow.className =
+        "flow";
+
+
+    ordered.forEach(
+        (task, index) => {
+
+            const node =
+                document.createElement(
+                    "div"
+                );
+
+
+            node.className =
+                "flow-node";
+
+
+            node.innerHTML = `
+
+                <strong>
+
+                    ${escapeHtml(task.id)}
+                    —
+                    ${escapeHtml(task.name)}
+
+                </strong>
+
+                <span>
+
+                    Priority:
+                    ${task.priority}
+
+                </span>
+
+                <span>
+
+                    ${escapeHtml(
+                        task.source ||
+                        "Automatic"
+                    )}
+
+                </span>
+
+            `;
+
+
+            flow.appendChild(
+                node
+            );
+
+
+            if (
+                index <
+                ordered.length - 1
+            ) {
+
+                const arrow =
+                    document.createElement(
+                        "div"
+                    );
+
+
+                arrow.className =
+                    "flow-arrow";
+
+
+                arrow.textContent =
+                    "→";
+
+
+                flow.appendChild(
+                    arrow
+                );
+
+            }
+
+        }
+    );
+
+
+    container.appendChild(
+        flow
+    );
+
+}
+
+
+/* =========================================================
+   DEPENDENCIES
+   ========================================================= */
+
+function renderDependencies(
+    tasks
+) {
+
+    const container =
+        document.getElementById(
+            "dependencyList"
+        );
+
+
+    container.innerHTML = "";
+
+
+    tasks.forEach(
+        task => {
+
+            const item =
+                document.createElement(
+                    "div"
+                );
+
+
+            item.className =
+                "dependency-item";
+
+
+            const dependencies =
+                task.dependencies &&
+                task.dependencies.length
+                    ? task.dependencies.join(", ")
+                    : "None";
+
+
+            item.innerHTML = `
+
+                <strong>
+
+                    ${escapeHtml(task.id)}
+                    —
+                    ${escapeHtml(task.name)}
+
+                </strong>
+
+                <span>
+
+                    &nbsp; depends on:
+
+                    ${escapeHtml(
+                        dependencies
+                    )}
+
+                </span>
+
+            `;
+
+
+            container.appendChild(
+                item
+            );
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   GANTT
+   ========================================================= */
+
+function renderGantt(
+    schedule
+) {
+
+    const container =
+        document.getElementById(
+            "ganttContainer"
+        );
+
+
+    const scale =
+        document.getElementById(
+            "ganttScale"
+        );
+
+
+    container.innerHTML = "";
+
+    scale.innerHTML = "";
+
+
+    if (!schedule.length) {
+
+        container.innerHTML = `
+
+            <div class="empty-state">
+
+                No schedule available.
+
+            </div>
+
+        `;
+
+        return;
+
+    }
+
+
+    const maximumEnd =
+        Math.max(
+            ...schedule.map(
+                task =>
+                    task.endTime
+            )
+        );
+
+
+    for (
+        let time = 0;
+        time <= maximumEnd;
+        time++
+    ) {
+
+        const label =
+            document.createElement(
+                "div"
+            );
+
+
+        label.className =
+            "scale-number";
+
+
+        label.textContent =
+            time;
+
+
+        scale.appendChild(
+            label
+        );
+
+    }
+
+
+    const processors =
+        [
+            ...new Set(
+                schedule.map(
+                    task =>
+                        task.processor
+                )
+            )
+        ]
+        .sort(
+            (a, b) =>
+                a - b
+        );
+
+
+    processors.forEach(
+        processor => {
+
+            const row =
+                document.createElement(
+                    "div"
+                );
+
+
+            row.className =
+                "gantt-row";
+
+
+            const label =
+                document.createElement(
+                    "div"
+                );
+
+
+            label.className =
+                "gantt-label";
+
+
+            label.textContent =
+                "CPU " +
+                processor;
+
+
+            const track =
+                document.createElement(
+                    "div"
+                );
+
+
+            track.className =
+                "gantt-track";
+
+
+            schedule
+                .filter(
+                    task =>
+                        task.processor ===
+                        processor
+                )
+                .forEach(
+                    task => {
+
+                        const block =
+                            document.createElement(
+                                "div"
+                            );
+
+
+                        block.className =
+                            "gantt-task";
+
+
+                        const left =
+                            task.startTime *
+                            80;
+
+
+                        const width =
+                            Math.max(
+                                35,
+                                task.duration *
+                                80
+                            );
+
+
+                        block.style.left =
+                            left + "px";
+
+
+                        block.style.width =
+                            width + "px";
+
+
+                        block.title =
+                            task.taskName +
+                            " | " +
+                            task.startTime +
+                            " → " +
+                            task.endTime;
+
+
+                        block.textContent =
+                            task.taskId +
+                            " " +
+                            task.taskName;
+
+
+                        track.appendChild(
+                            block
+                        );
+
+                    }
+                );
+
+
+            row.appendChild(
+                label
+            );
+
+
+            row.appendChild(
+                track
+            );
+
+
+            container.appendChild(
+                row
+            );
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   COMPLETE SCHEDULE TABLE
+   ========================================================= */
+
+function renderScheduleTable(
+    tasks,
+    schedule,
+    results
+) {
+
+    const tbody =
+        document.getElementById(
+            "scheduleTableBody"
+        );
+
+
+    tbody.innerHTML = "";
+
+
+    const scheduleMap =
+        new Map();
+
+
+    schedule.forEach(
+        item => {
+
+            scheduleMap.set(
+                item.taskId,
+                item
+            );
+
+        }
+    );
+
+
+    const resultMap =
+        new Map();
+
+
+    results.forEach(
+        item => {
+
+            resultMap.set(
+                item.taskId,
+                item
+            );
+
+        }
+    );
+
+
+    tasks.forEach(
+        task => {
+
+            const scheduled =
+                scheduleMap.get(
+                    task.id
+                );
+
+
+            const result =
+                resultMap.get(
+                    task.id
+                );
+
+
+            const row =
+                document.createElement(
+                    "tr"
+                );
+
+
+            const dependencies =
+                task.dependencies &&
+                task.dependencies.length
+                    ? task.dependencies.join(", ")
+                    : "—";
+
+
+            const sourceClass =
+                task.source ===
+                "User Selected"
+                    ? "source-user"
+                    : "source-auto";
+
+
+            const status =
+                result &&
+                result.status
+                    ? result.status
+                    : (
+                        scheduled &&
+                        scheduled.status
+                            ? scheduled.status
+                            : "Waiting"
+                    );
+
+
+            const resultText =
+                result &&
+                result.result
+                    ? result.result
+                    : "—";
+
+
+            row.innerHTML = `
+
+                <td>
+
+                    ${escapeHtml(task.id)}
+
+                </td>
+
+
+                <td>
+
+                    ${escapeHtml(task.name)}
+
+                </td>
+
+
+                <td class="${sourceClass}">
+
+                    ${escapeHtml(
+                        task.source ||
+                        "Automatic"
+                    )}
+
+                </td>
+
+
+                <td>
+
+                    ${task.priority}
+
+                </td>
+
+
+                <td>
+
+                    ${task.duration}
+
+                </td>
+
+
+                <td>
+
+                    ${escapeHtml(
+                        dependencies
+                    )}
+
+                </td>
+
+
+                <td>
+
+                    ${
+                        scheduled
+                            ? scheduled.processor
+                            : "—"
+                    }
+
+                </td>
+
+
+                <td>
+
+                    ${
+                        scheduled
+                            ? scheduled.startTime
+                            : "—"
+                    }
+
+                </td>
+
+
+                <td>
+
+                    ${
+                        scheduled
+                            ? scheduled.endTime
+                            : "—"
+                    }
+
+                </td>
+
+
+                <td>
+
+                    <span class="
+                        table-status
+                        ${statusClass(status)}
+                    ">
+
+                        ${escapeHtml(
+                            status
+                        )}
+
+                    </span>
+
+                </td>
+
+
+                <td>
+
+                    <div class="result-text">
+
+                        ${escapeHtml(
+                            resultText
+                        )}
+
+                    </div>
+
+                </td>
+
+            `;
+
+
+            tbody.appendChild(
+                row
+            );
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   ESCAPE HTML
+   ========================================================= */
+
+function escapeHtml(
+    value
+) {
+
+    if (
+        value === null ||
+        value === undefined
+    ) {
+
+        return "";
+
+    }
+
+
+    return String(value)
+
+        .replaceAll(
+            "&",
+            "&amp;"
+        )
+
+        .replaceAll(
+            "<",
+            "&lt;"
+        )
+
+        .replaceAll(
+            ">",
+            "&gt;"
+        )
+
+        .replaceAll(
+            '"',
+            "&quot;"
+        )
+
+        .replaceAll(
+            "'",
+            "&#039;"
+        );
+
+}
+
+</script>
+
+
+</body>
+
+</html>
